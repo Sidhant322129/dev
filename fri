@@ -1,0 +1,67 @@
+========LAST WEEK:=======
+(45)
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int globalVar = 5;
+
+int main() {
+    int localVar = 10;
+
+    pid_t pid = fork();
+
+    if(pid < 0) {
+        perror("Fork failed");
+        return 1;
+    }
+
+    if(pid == 0) {
+        globalVar++;
+        localVar;
+        printf("Child process: Global Var = %d, Local Var = %d\n", globalVar, localVar);
+    } else {
+        wait(NULL);
+        printf("Parent process: Global Var = %d, Local Var = %d\n", globalVar, localVar);
+    }
+
+    return 0;
+}
+----------------------
+(48)
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+
+int globalVar = 5;
+
+int main() {
+    int localVar = 10;
+
+    pid_t pid = fork();
+
+    if(pid < 0) {
+        perror("Fork failed");
+        return 1;
+    }
+
+    if(pid == 0) {
+        for(int i = 0; i < 5; i++) {
+            printf("Child process (PID: %d): Global Var = %d, Local Var = %d\n", getpid(), globalVar, localVar);
+            sleep(30);
+        }
+    } else {
+        for(int i = 0; i < 5; i++) {
+            printf("Parent process (PID: %d): Global Var = %d, Local Var = %d\n", getpid(), globalVar, localVar);
+            sleep(30);
+        }
+        wait(NULL);
+    }
+
+    return 0;
+}
+----------------
+
