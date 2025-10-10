@@ -178,4 +178,33 @@ int main() {
     return 0;
 }
 ------------------end last week----------------
-Test case week below ::;;::;;;;;;;;;;;;;;;;;;
+Test case week below---------------------------
+(41) 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+
+int main()
+{
+    int pid;
+    pid = fork();
+    if (pid < 0)
+    {
+        printf("child not created\n");
+        exit(1);
+    }
+    else if (pid == 0)
+    {
+        printf("child process id = %d\n", getpid());
+        printf("parent id = %d\n", getppid());
+    }
+    else
+    {
+        printf("from parent : child pid = %d\n", pid);
+        printf("from parent : parent pid = %d\n", getpid());
+    }
+    return 0;
+}
+---------------
+
