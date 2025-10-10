@@ -112,3 +112,70 @@ int main() {
     return 0;
 }
 ---------------------------
+(51) 
+
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+
+int main() {
+    pid_t pid1, pid2, pid3;
+    int status;
+
+    pid1 = fork();
+    if(pid1 < 0) {
+        perror("Fork Failed");
+        exit(1);
+    }
+
+    pid2 = fork();
+    if(pid2 < 0) {
+        perror("Fork failed");
+        exit(1);
+    }
+
+    if(pid2 == 0) {
+        execlp("ls", "ls", "-l", NULL);
+        perror("execlp failed");
+        exit(1);
+    }
+
+    pid3 = fork();
+    if(pid3 < 0) {
+        perror("Fork failed");
+        exit(1);
+    }
+
+    if(pid3 == 0) {
+        execlp("date", "date", NULL);
+        perror("execlp failed");
+        exit(1);
+    }
+
+    waitpid(pid1, &status, 0);
+    if(WIFEXITED(status)) {
+        printf("Child 1 (PID: %d) finished with status: %d\n", pid1, WEXITSTATUS(status));
+    } else {
+        printf("Child 1 (PID: %d) did not terminate normally \n", pid1);
+    }
+
+    waitpid(pid2, &status, 0);
+    if(WIFEXITED(status)) {
+        printf("Child 1 (PID: %d) finished with status: %d\n", pid2, WEXITSTATUS(status));
+    } else {
+        printf("Child 1 (PID: %d) did not terminate normally \n", pid2);
+    }
+
+    waitpid(pid3, &status, 0);
+    if(WIFEXITED(status)) {
+        printf("Child 1 (PID: %d) finished with status: %d\n", pid3, WEXITSTATUS(status));
+    } else {
+        printf("Child 1 (PID: %d) did not terminate normally \n", pid3);
+    }
+
+    return 0;
+}
+------------------end last week----------------
+Test case week below ::;;::;;;;;;;;;;;;;;;;;;
