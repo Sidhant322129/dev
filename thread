@@ -133,3 +133,58 @@ int main()
 
     return 0;
 }
+
+62
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+// Thread function to print even numbers
+void* printEven(void* arg)
+{
+    int end = *(int*)arg;
+
+    for (int i = 0; i <= end; i++)
+    {
+        if (i % 2 == 0)
+            printf("Even: %d\n", i);
+    }
+
+    pthread_exit(NULL);
+}
+
+// Thread function to print odd numbers
+void* printOdd(void* arg)
+{
+    int end = *(int*)arg;
+
+    for (int i = 0; i <= end; i++)
+    {
+        if (i % 2 != 0)
+            printf("Odd : %d\n", i);
+    }
+
+    pthread_exit(NULL);
+}
+
+int main()
+{
+    pthread_t t1, t2;
+    int end;
+
+    // User input
+    printf("Enter end of range: ");
+    scanf("%d", &end);
+
+    // Create two threads
+    pthread_create(&t1, NULL, printEven, &end);
+    pthread_create(&t2, NULL, printOdd, &end);
+
+    // Wait for threads to finish
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Finished printing odd and even numbers.\n");
+
+    return 0;
+}
