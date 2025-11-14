@@ -1,0 +1,90 @@
+61
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+// Structure to pass range
+typedef struct {
+    int start;
+    int end;
+} Range;
+
+// Function to check prime
+int isPrime(int n)
+{
+    if (n <= 1) return 0;
+    for (int i = 2; i * i <= n; i++)
+        if (n % i == 0)
+            return 0;
+    return 1;
+}
+
+// Thread 1 → Sum of numbers
+void* sumThread(void* arg)
+{
+    Range* r = (Range*)arg;
+    int* sum = malloc(sizeof(int)); // return value
+
+    *sum = 0;
+    for (int i = r->start; i <= r->end; i++)
+        *sum += i;
+
+    printf("Sum of numbers from %d to %d = %d\n", r->start, r->end, *sum);
+
+    pthread_exit(sum);  // return sum
+}
+
+// Thread 2 → Print primes and return prime count
+void* primeThread(void* arg)
+{
+    Range* r = (Range*)arg;
+    int* count = malloc(sizeof(int)); // return value
+
+    *count = 0;
+    printf("Prime numbers in range: ");
+
+    for (int i = r->start; i <= r->end; i++)
+    {
+        if (isPrime(i))
+        {
+            printf("%d ", i);
+            (*count)++;
+        }
+    }
+    printf("\n");
+
+    pthread_exit(count);  // return count
+}
+
+int main()
+{
+    pthread_t t1, t2;
+    Range r;
+
+    // Get range from user
+    printf("Enter start: ");
+    scanf("%d", &r.start);
+
+    printf("Enter end: ");
+    scanf("%d", &r.end);
+
+    // Create threads
+    pthread_create(&t1, NULL, sumThread, (void*)&r);
+    pthread_create(&t2, NULL, primeThread, (void*)&r);
+
+    // Retrieve thread return values
+    int *sumResult, *primeCount;
+
+    pthread_join(t1, (void**)&sumResult);
+    pthread_join(t2, (void**)&primeCount);
+
+    // Print returned values
+    printf("Returned sum      = %d\n", *sumResult);
+    printf("Returned prime count = %d\n", *primeCount);
+
+    // Free memory allocated in threads
+    free(sumResult);
+    free(primeCount);
+
+    return 0;
+}
