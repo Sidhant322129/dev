@@ -88,3 +88,48 @@ int main()
 
     return 0;
 }
+
+60
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+
+// Thread 1 function
+void* threadFunc1(void* arg)
+{
+    for (int i = 1; i <= 5; i++)
+    {
+        printf("Thread 1: %d\n", i);
+        sleep(1);
+    }
+    pthread_exit(NULL);
+}
+
+// Thread 2 function
+void* threadFunc2(void* arg)
+{
+    for (int i = 1; i <= 5; i++)
+    {
+        printf("Thread 2: %d\n", i);
+        sleep(1);
+    }
+    pthread_exit(NULL);
+}
+
+int main()
+{
+    pthread_t t1, t2;
+
+    // Create two threads
+    pthread_create(&t1, NULL, threadFunc1, NULL);
+    pthread_create(&t2, NULL, threadFunc2, NULL);
+
+    // Wait for both threads to finish
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf("Both threads finished execution.\n");
+
+    return 0;
+}
