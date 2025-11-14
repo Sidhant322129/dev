@@ -1,4 +1,4 @@
-49
+no49
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -101,4 +101,50 @@ int main()
     return 0;
 }
 
+57.
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+
+void handler(int sig)
+{
+    printf("I am awake (received signal %d)\n", sig);
+}
+
+int main()
+{
+    int pid = fork();
+
+    if (pid == 0)
+    {
+        // --------------------------
+        // Process A → waits for SIGUSR1
+        // --------------------------
+        signal(SIGUSR1, handler);
+
+        printf("Process A (PID = %d) sleeping...\n", getpid());
+
+        while (1)
+        {
+            sleep(1);   // normal sleeping
+        }
+    }
+    else
+    {
+        // --------------------------
+        // Process B → waits for SIGUSR2
+        // --------------------------
+        signal(SIGUSR2, handler);
+
+        printf("Process B (PID = %d) sleeping...\n", getpid());
+
+        while (1)
+        {
+            sleep(1);   // normal sleeping
+        }
+    }
+
+    return 0;
+}
