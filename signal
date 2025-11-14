@@ -277,3 +277,27 @@ int main()
 
     return 0;
 }
+
+
+56.
+#include <stdio.h>
+#include <signal.h>
+#include <unistd.h>
+
+void handler(int sig) {
+    printf("\nInterrupt Received! Signal value = %d\n", sig);
+}
+
+int main() {
+    // Register handler for SIGINT (Ctrl + C)
+    signal(SIGINT, handler);
+
+    printf("Program running... Press Ctrl+C to generate interrupt:\n");
+
+    while (1) {
+        sleep(1); // Keep program alive
+    }
+
+    return 0;
+}
+
