@@ -1,4 +1,4 @@
-no49
+inno49
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -143,6 +143,48 @@ int main()
         while (1)
         {
             sleep(1);   // normal sleeping
+        }
+    }
+
+    return 0;
+}
+
+
+54.
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/types.h>
+
+// Signal handler for parent
+void handler(int sig)
+{
+    printf("Parent received SIGCHLD (child terminated)\n");
+}
+
+int main()
+{
+    signal(SIGCHLD, handler);   // parent handles SIGCHLD
+
+    int pid = fork();
+
+    if (pid == 0)
+    {
+        // Child process
+        printf("Child process (PID = %d) running...\n", getpid());
+        sleep(2);
+        printf("Child exiting now...\n");
+        exit(0);   // this automatically sends SIGCHLD to parent
+    }
+    else
+    {
+        // Parent process
+        printf("Parent waiting for child...\n");
+
+        while (1)
+        {
+            sleep(1);   // parent normally sleeping
         }
     }
 
