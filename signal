@@ -23,3 +23,45 @@ int main()
 
     return 0;
 }
+
+
+52 ./a.out 3
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <signal.h>
+
+void handler(int n)
+{
+    printf("Child process terminated\n");
+}
+
+int main(int argc, char *argv[])
+{
+    int d = atoi(argv[1]);   // delay taken from command line
+    int pid = fork();
+
+    if (pid == 0)   // child
+    {
+        for (int i = 0; i < 10; i++)
+        {
+            printf("Child process : %d\n", getpid());
+            sleep(1);
+        }
+    }
+    else            // parent process
+    {
+        signal(SIGCHLD, handler);   // when child dies → print message
+
+        sleep(d);   // wait for delay
+        
+        if (pid > 0)
+        {
+            kill(pid, SIGINT);   // send SIGINT to kill child
+        }
+    }
+
+    return 0;
+}
+
